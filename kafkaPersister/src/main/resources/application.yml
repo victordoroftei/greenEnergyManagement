@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: kafkaPersister
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    consumer:
+      group-id: my-group
+      auto-offset-reset: earliest
+      key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+      value-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+
+  data:
+    mongodb:
+      uri: mongodb://admin:admin@localhost:27017/greenenergy
