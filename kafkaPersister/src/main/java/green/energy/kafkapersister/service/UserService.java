@@ -19,7 +19,7 @@ public class UserService {
     public User getUserByUsername(String username) {
         Optional<User> userOptional = userRepository.findUserByUsername(username);
 
-        userOptional.orElseThrow(() -> new UserNotFoundException("User not found"));
+        userOptional.orElseThrow(() -> new UserNotFoundException("User %s not found".formatted(username)));
 
         return userOptional.get();
     }

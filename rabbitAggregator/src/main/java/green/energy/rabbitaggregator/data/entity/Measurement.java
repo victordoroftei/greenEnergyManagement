@@ -1,4 +1,4 @@
-package green.energy.kafkapersister.data.entity;
+package green.energy.rabbitaggregator.data.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

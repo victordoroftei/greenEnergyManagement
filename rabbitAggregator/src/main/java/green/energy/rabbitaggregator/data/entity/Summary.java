@@ -1,4 +1,4 @@
-package green.energy.kafkapersister.data.entity;
+package green.energy.rabbitaggregator.data.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,15 +9,13 @@ import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-
-@Document(collection = "measurements")
-@TypeAlias("Measurement")
+@Document(collection = "summaries")
+@TypeAlias("Summary")
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Measurement {
+public class Summary {
 
     @Id
     private String id;
@@ -25,9 +23,9 @@ public class Measurement {
     @DBRef
     private User user;
 
-    private Long quantity;
+    private Long lifetimeConsumption;
 
-    private LocalDateTime beginTimestamp;
+    private Long lifetimeProduction;
 
-    private LocalDateTime endTimestamp;
+    private Integer hoursActive;
 }

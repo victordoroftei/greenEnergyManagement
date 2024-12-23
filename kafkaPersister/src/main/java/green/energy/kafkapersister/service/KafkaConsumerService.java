@@ -7,6 +7,7 @@ import green.energy.kafkapersister.model.exception.UserNotFoundException;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,8 @@ public class KafkaConsumerService {
 
     private final MeasurementService measurementService;
 
+    private final RabbitProducerService rabbitProducerService;
+
     @PostConstruct
     public void init() {
         // Since my timezone is EET (UTC+2/3, depending on daylight savings),
@@ -28,7 +31,7 @@ public class KafkaConsumerService {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     }
 
-    @KafkaListener(topics = "measurement", groupId = "my-group")
+    @KafkaListener(topics = "${spring.kafka.consumer.topic}", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeMessage(MeasurementMessage message) {
         log.info("Reading Message: {}", message);
 
@@ -51,6 +54,8 @@ public class KafkaConsumerService {
                 .build();
 
         measurementService.addMeasurement(measurement);
+
+        rabbitProducerService.publishMessageForSummarizing(message);
     }
 }
 

@@ -18,7 +18,7 @@ import java.util.TimeZone;
 @Slf4j
 public class KafkaProducerService {
 
-    @Value("${spring.kafka.topic}")
+    @Value("${spring.kafka.producer.topic}")
     private String topic;
 
     private final KafkaTemplate<String, MeasurementMessage> kafkaTemplate;
