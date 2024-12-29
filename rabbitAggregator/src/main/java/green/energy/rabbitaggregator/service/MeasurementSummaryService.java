@@ -39,9 +39,9 @@ public class MeasurementSummaryService {
 
         long currentQuantity = message.getQuantity();
         if (currentQuantity <= 0) {
-            oldConsumption += currentQuantity;
-        } else {
             oldProduction += (-1) * currentQuantity;
+        } else {
+            oldConsumption += currentQuantity;
         }
 
         summary.setLifetimeConsumption(oldConsumption);

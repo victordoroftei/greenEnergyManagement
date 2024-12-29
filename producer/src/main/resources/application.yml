@@ -3,7 +3,7 @@ spring:
     name: producer
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:9092
 
     producer:
       topic: measurement

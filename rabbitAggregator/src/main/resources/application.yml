@@ -13,4 +13,4 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://admin:admin@localhost:27017/greenenergy
+      uri: mongodb://admin:admin@mongodb-green-energy:27017/greenenergy

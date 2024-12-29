@@ -6,6 +6,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
+
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: kafka
@@ -20,28 +21,79 @@ services:
     depends_on:
       - zookeeper
 
+
   mongodb:
     image: mongo:6.0
     container_name: mongodb-green-energy
     ports:
       - "27017:27017"
     volumes:
-      - ./data:/data/green-energy-db
+      - green-energy-db:/data/db
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
+
 
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
     ports:
-      - "5672:5672"  # RabbitMQ messaging port
-      - "15672:15672"  # RabbitMQ management UI port
+      - "5672:5672"   # RabbitMQ messaging port
+      - "15672:15672" # RabbitMQ management UI port
     environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: admin
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbitmq_management load_definitions "/etc/rabbitmq/definitions.json"
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq  # Persist data
+      - rabbitmq_data:/var/lib/rabbitmq # Persist data
+      - ./resources/rabbitmq-definitions.json:/etc/rabbitmq/definitions.json # Queue/exchange definitions
+
+
+  rabbitaggregator:
+    build:
+      context: ./rabbitAggregator
+      dockerfile: Dockerfile
+    container_name: rabbitaggregator
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: mongodb://admin:admin@mongodb-green-energy:27017/greenenergy
+      SPRING_RABBITMQ_HOST: rabbitmq
+    depends_on:
+      - rabbitmq
+      - mongodb
+
+
+  producer:
+    build:
+      context: ./producer
+      dockerfile: Dockerfile
+    container_name: producer
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - kafka
+  
+  
+  kafkapersister:
+    build:
+      context: ./kafkaPersister
+      dockerfile: Dockerfile
+    container_name: kafkapersister
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: mongodb://admin:admin@mongodb-green-energy:27017/greenenergy
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      - kafka
+      - rabbitmq
+      - mongodb
+
 
 volumes:
   rabbitmq_data:
+  green-energy-db:
