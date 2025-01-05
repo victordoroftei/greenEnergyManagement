@@ -12,10 +12,13 @@ public class RabbitProducerService {
 
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${spring.rabbitmq.producer.queue}")
-    private String queueName;
+    @Value("${spring.rabbitmq.producer.exchange}")
+    private String exchange;
+
+    @Value("${spring.rabbitmq.producer.routing-key}")
+    private String routingKey;
 
     public void publishMessageForSummarizing(MeasurementMessage message) {
-        rabbitTemplate.convertAndSend(queueName, message);
+        rabbitTemplate.convertAndSend(exchange, routingKey, message);
     }
 }

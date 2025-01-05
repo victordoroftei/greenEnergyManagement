@@ -22,6 +22,8 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
       - zookeeper
+    volumes:
+      - kafka_data:/var/lib/kafka/data
 
 
   mongodb:
@@ -101,3 +103,4 @@ services:
 volumes:
   rabbitmq_data:
   green-energy-db:
+  kafka_data:

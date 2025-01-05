@@ -18,6 +18,8 @@ spring:
 
     producer:
       queue: summary
+      exchange: greenenergy
+      routing-key: SUMMARY_MESSAGE
 
   data:
     mongodb:
